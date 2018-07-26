@@ -30,12 +30,11 @@ class Calendar extends React.Component {
         eventLimit= {true} // allow "more" link when too many events
         events = {this.state.events}	
         eventClick = {(calEvent) => {
-          this.setState({ eventData: calEvent})
-          this.setState({ showModalWindow: true})
+          this.setState({ eventData: calEvent, showModalWindow: !this.state.showModalWindow})
         }}
       />
       
-      {this.state.showModalWindow ? <EditEvent editedEvent = { this.state.eventData } /> : null }
+      {this.state.showModalWindow ? <EditEvent editedEvent = { this.state.eventData } modalIsOpen = { this.state.showModalWindow } /> : null }
       
       </div>
     );

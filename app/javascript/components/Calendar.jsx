@@ -10,6 +10,7 @@ class Calendar extends React.Component {
     this.state = {
       events: null,
       showModalWindow: false,
+      eventData: null,
     };
   }
 
@@ -28,15 +29,14 @@ class Calendar extends React.Component {
         editable= {true}
         eventLimit= {true} // allow "more" link when too many events
         events = {this.state.events}	
-        eventClick = {(calEvent, jsEvent, view, resourceObj) => {
-          this.setState(prevState => ({
-            showModalWindow: !prevState.showModalWindow
-          }));
+        eventClick = {(calEvent) => {
+          this.setState({ eventData: calEvent})
+          this.setState({ showModalWindow: true})
         }}
-        <EditEvent  />
-        {/* { this.state.showModalWindow ? <EditEvent  /> : null } */}
       />
-     
+      
+      {this.state.showModalWindow ? <EditEvent editedEvent = { this.state.eventData } /> : null }
+      
       </div>
     );
   }
@@ -45,7 +45,6 @@ class Calendar extends React.Component {
     fetch('/api/v1/events.json')
       .then((response) => {return response.json()})
       .then((data) => {this.setState({ events: data }) });
-      //.then((data) => {console.log("--->", data) });
   }
 }
 

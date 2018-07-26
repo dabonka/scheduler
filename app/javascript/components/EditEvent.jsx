@@ -7,35 +7,13 @@ let appElement = document.getElementById('example');
 Modal.setAppElement(appElement);
 
 class EditEvent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { modalIsOpen: false };
-  }
-
-  openModal = () => {
-    this.setState({modalIsOpen: true});
-  }
-
-  closeModal = () => {
-    this.setState({modalIsOpen: false});
-  }
-
-  handleModalCloseRequest = () => {
-    // opportunity to validate something and keep the modal open even if it
-    // requested to be closed
-    this.setState({modalIsOpen: false});
-  }
-
-  handleSaveClicked = (e) => {
-    alert('Save button was clicked');
-  }
 
   render() {
     return (
       <div>
-        {console.log("EditEvent ->>>")}
-        <button type="button" className="btn btn-primary" onClick={this.openModal}>Open Modal</button>
-        <Modal
+        {console.log("EditEvent ->>>", this.props.editedEvent)}
+
+        {/* <Modal
           className="Modal__Bootstrap modal-dialog"
           closeTimeoutMS={150}
           isOpen={this.state.modalIsOpen}
@@ -60,12 +38,11 @@ class EditEvent extends Component {
               <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>
             </div>
           </div>
-        </Modal>
+        </Modal> */}
       </div>
     );
   }
 }
 
-//ReactDOM.render(<EditEvent/>, appElement);
 
 export default EditEvent;

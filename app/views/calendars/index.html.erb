@@ -1,0 +1,70 @@
+<% if current_user %>
+
+<h1>Dashboard</h1>
+
+  <div class="row">
+  <%= form_tag('/', { :controller => 'calendars', :action => 'index'}) do %>
+
+  <% if params[:direction] %>
+    <% hidden_field_tag 'direction', params[:direction] %>
+  <% end %>
+
+  <% if params[:sort] %>
+    <% hidden_field_tag 'sort', params[:sort] %>
+  <% end %>
+
+    <div class="container">
+      <div class="form-group row">
+
+        <div class="col-6 align-self-center">
+          <%= text_field_tag(:calendar_name, (params[:calendar_name].present? ? params[:calendar_name] : nil), {class: "form-control", placeholder: 'Enter search name...'}) %>
+        </div>
+
+      <div class="col-2 align-self-center">
+        <%= "Status" %>
+      </div>
+    
+      <div class="col-2 align-self-center">
+        <%= select_tag "public", options_for_select(["All", "Private", "Public"], (params[:public].present? ? params[:public] : "All")) %>
+      </div>
+
+        <div class="col-2">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  <% end %>
+</div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col"><%= sortable "title", "Calendar Name" %></th>
+        <th scope="col"><%= sortable "public", "Status" %></th>
+        <th scope="col">Shortened Link</th>
+        <th scope="col"><%= sortable "created_at", "Date/Time" %></th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @calendars.each do |calendar| %>
+        <tr>
+          <td><%= link_to(calendar.title, calendar)  %></td>
+          <td><%= calendar.public ? "Public" : "Private" %></td>
+          <td><%= calendar.public ? "Shortened Link should be here" : "" %></td>
+          <td><%= calendar.created_at.strftime("%d:%m:%Y %I:%M") %></td>
+          <td>
+            <%= link_to 'Edit', edit_calendar_path(calendar), remote: true, :class => "btn btn-secondary"  %>
+            <%= link_to('Delete', calendar_path(calendar), method: :delete, data: { confirm: 'Are you sure?'}, :class => "btn btn-warning") %>
+          
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Create New", new_calendar_path, remote: true, class: "btn btn-primary" %>
+<% end %>
+
+<%= paginate @calendars, theme: 'twitter-bootstrap-4', pagination_class: "pagination-sm  justify-content-center" %>

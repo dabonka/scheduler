@@ -1,0 +1,56 @@
+<div id="calendar-modal" class="modal fade modal-class">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <% if controller.action_name == "new" %>
+          <h3 id="myModalLabel">Add calendar</h3>
+        <% else%>
+          <h3 id="myModalLabel">Edit calendar</h3>
+         <% end %>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      </div>
+
+      <%= form_for @calendar, remote: true do |f| %>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row align-top">
+
+            <div class="col-2 align-self-center">
+              <%= f.label :title, "Title:", class: "control-label" %>
+            </div>
+
+            <div class="col-10">
+              <%= f.text_field :title, placeholder: "Title", autofocus: true, class: "form-control" %>
+            </div>
+            
+          </div>
+
+          <div class="row align-bottom">
+            <div class="col-2 align-self-center">
+              Public?
+            </div>
+
+            <div class="col-10">
+              <%= f.check_box :public, class: "checkbox" %>
+            </div>
+
+          
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+
+        <% if controller.action_name == "new" %>
+          <%= f.submit "Create", :class => 'btn btn-success' %>
+        <% else%>
+          <%= f.submit "Update", :class => 'btn btn-success' %>
+        <% end %>
+
+        <button class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      </div>
+    <% end %>
+    
+    </div>
+  </div>
+</div>

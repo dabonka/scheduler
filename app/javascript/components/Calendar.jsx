@@ -1,6 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'react-dom';
 import FullCalendar from 'fullcalendar-reactwrapper';
+import EditEvent from './EditEvent'
 
 class Calendar extends React.Component {
 
@@ -8,6 +9,7 @@ class Calendar extends React.Component {
     super(props);
     this.state = {
       events: null,
+      showModalWindow: false,
     };
   }
 
@@ -26,10 +28,15 @@ class Calendar extends React.Component {
         editable= {true}
         eventLimit= {true} // allow "more" link when too many events
         events = {this.state.events}	
-        eventClick = {function(calEvent, jsEvent, view, resourceObj) {
-          return <EditEvent />;
+        eventClick = {(calEvent, jsEvent, view, resourceObj) => {
+          this.setState(prevState => ({
+            showModalWindow: !prevState.showModalWindow
+          }));
         }}
-        />
+        <EditEvent  />
+        {/* { this.state.showModalWindow ? <EditEvent  /> : null } */}
+      />
+     
       </div>
     );
   }

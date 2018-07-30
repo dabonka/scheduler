@@ -15,7 +15,6 @@ class Calendar extends React.Component {
   }
 
   componentDidMount(){
-    console.log("this.props_calendar_id---->", this.props.calendar_id)
     fetch('/calendars/' +this.props.calendar_id +'/events.json')
       .then(response => response.json())
       .then(data => this.setState({ events: data }))
@@ -47,7 +46,7 @@ class Calendar extends React.Component {
   dayClick (date, allDay, jsEvent, view) {
     const title = prompt('Event Title:');
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    console.log("token--->", token)
+
     fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
       method: 'post',
       credentials: 'same-origin', // <-- includes cookies in the request
@@ -56,9 +55,10 @@ class Calendar extends React.Component {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({title: title, start: date })
-               
+      body: JSON.stringify({title: title, start: date.format(), calendar_id: this.props.calendar_id})
     })
+    .then(function(res){ console.log(res) })
+    .catch(function(res){ console.log(res) })
   }
 
   eventClick (date, allDay, jsEvent, view) {

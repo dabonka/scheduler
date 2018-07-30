@@ -46,19 +46,24 @@ class Calendar extends React.Component {
   dayClick (date, allDay, jsEvent, view) {
     const title = prompt('Event Title:');
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
+        method: 'post',
+        credentials: 'same-origin', // <-- includes cookies in the request
+        headers: {
+          'CSRF-Token': token,
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({title: title, start: date.format(), calendar_id: this.props.calendar_id})
+      })
+      .then((json)=>{ 
 
-    fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
-      method: 'post',
-      credentials: 'same-origin', // <-- includes cookies in the request
-      headers: {
-        'CSRF-Token': token,
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({title: title, start: date.format(), calendar_id: this.props.calendar_id})
-    })
-    .then(function(res){ console.log(res) })
-    .catch(function(res){ console.log(res) })
+        console.log("json--->", json); 
+        fetch('/calendars/' +this.props.calendar_id +'/events.json')
+               .then(res2 => res2.json())
+               .then((res2) => this.setState({ events: res2 }))
+
+   })
   }
 
   eventClick (date, allDay, jsEvent, view) {

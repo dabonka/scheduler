@@ -28,6 +28,7 @@ if Rails.env.development?
     events << Event.create(
         title: Faker::StarWars.character,
         start: Faker::Time.between(2.days.ago, Date.today, :afternoon), 
+        end: Faker::Time.between(1.days.ago, Date.today, :afternoon), 
         allDay: Faker::Boolean.boolean,
         calendar: calendars.sample
     )

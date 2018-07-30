@@ -1,10 +1,11 @@
-class Api::V1::EventsController < ApplicationController
+class EventsController < ApplicationController
+  protect_from_forgery unless: -> { request.format.json? }
   def index
-    render json: Event.all
+    render json: Event.where(calendar_id: params[:calendar_id])
   end
 
   def create
-    event = Event.create(event_params)
+    event = Event.create!(event_params)
     render json: event
   end
 

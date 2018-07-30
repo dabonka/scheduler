@@ -6,10 +6,7 @@ Rails.application.routes.draw do
   root :to => "calendars#index"
   post '/' => "calendars#index"
 
-  namespace :api do 
-    namespace :v1 do 
-     resources :events, only: [:index, :create, :destroy, :update]
-    end 
-  end 
-
+  resources :calendars do
+    resources :events, only: [:index, :create, :destroy, :update]
+  end
 end

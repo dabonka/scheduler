@@ -14,11 +14,18 @@ class Calendar extends React.Component {
     };
   }
 
+  componentDidMount(){
+    console.log("this.props_calendar_id---->", this.props.calendar_id)
+    fetch('/calendars/' +this.props.calendar_id +'/events.json')
+      .then(response => response.json())
+      .then(data => this.setState({ events: data }))
+  }
+
   render() {
     return (
       <div id="example-component">
       <FullCalendar
-        id = "your-custom-ID"
+        id={this.props.calendar_id}
         header = {{
             left: 'prev,next today myCustomButton',
             center: 'title',
@@ -29,22 +36,44 @@ class Calendar extends React.Component {
         editable= {true}
         eventLimit= {true} // allow "more" link when too many events
         events = {this.state.events}	
-        eventClick = {(calEvent) => {
-          this.setState({ eventData: calEvent, showModalWindow: !this.state.showModalWindow})
-        }}
+        dayClick = {this.dayClick.bind(this)}
+        eventClick = {this.eventClick.bind(this)}
       />
-      
-      {this.state.showModalWindow ? <EditEvent editedEvent = { this.state.eventData } modalIsOpen = { this.state.showModalWindow } /> : null }
-      
+          
       </div>
     );
   }
 
-  componentDidMount(){
-    fetch('/api/v1/events.json')
-      .then((response) => {return response.json()})
-      .then((data) => {this.setState({ events: data }) });
+  dayClick (date, allDay, jsEvent, view) {
+    const title = prompt('Event Title:');
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    console.log("token--->", token)
+    fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
+      method: 'post',
+      credentials: 'same-origin', // <-- includes cookies in the request
+      headers: {
+        'CSRF-Token': token,
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({title: title, start: date })
+               
+    })
   }
+
+  eventClick (date, allDay, jsEvent, view) {
+    // const title = prompt('Event Title:');
+    // fetch('/api/v1/events.json', {
+    //   method: 'post',
+    //   headers: {
+    //     'Accept': 'application/json, text/plain, */*',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({title: title, start: date })
+    // }).then(res=>res.json())
+    //   .then(res => console.log(res));
+  }
+
 }
 
 export default Calendar;

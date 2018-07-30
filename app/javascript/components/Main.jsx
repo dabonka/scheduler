@@ -7,7 +7,7 @@ class Main extends React.Component {
   render() {
     return (
       <div id="example-component">
-        <Calendar />
+        <Calendar calendar_id={this.props.calendar_id}/>
       </div>
     );
   }

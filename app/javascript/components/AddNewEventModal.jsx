@@ -34,6 +34,10 @@ class AddNewEventModal extends React.Component {
     this.props.parentEventListUpdate();
   }
 
+  updateEventsList = () => {
+    this.props.parentMethod();
+}
+
   publish = () => {
     console.log(this.state.titleEvent);
     const title = this.state.titleEvent;
@@ -50,10 +54,7 @@ class AddNewEventModal extends React.Component {
       })
       .then((json)=>{ 
         console.log("json--->", json); 
-        fetch('/calendars/' +this.props.calendar_id +'/events.json')
-               .then(updatedEvents => updatedEvents.json())
-               .then((updatedEvents) => this.setState({ events: updatedEvents }))
-      
+        this.updateEventsList();
       })
   }
 
@@ -68,6 +69,7 @@ class AddNewEventModal extends React.Component {
     this.toggle();
     this.publish();
   }
+  
 
   render() {
     return (

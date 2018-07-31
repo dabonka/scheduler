@@ -12,6 +12,14 @@ class Calendar extends React.Component {
       events: null,
       eventData: null
     };
+
+    this.listUdpate = this.listUpdate.bind(this)
+  }
+
+  listUpdate = () =>{
+    fetch('/calendars/' +this.props.calendar_id +'/events.json')
+    .then(response => response.json())
+    .then(data => this.setState({ events: data }))
   }
 
   toggleEditModal = (date) =>{
@@ -21,10 +29,20 @@ class Calendar extends React.Component {
   
 
   componentDidMount(){
-    fetch('/calendars/' +this.props.calendar_id +'/events.json')
-      .then(response => response.json())
-      .then(data => this.setState({ events: data }))
+    // fetch('/calendars/' +this.props.calendar_id +'/events.json')
+    //   .then(response => response.json())
+    //   .then(data => this.setState({ events: data }))
+
+    this.listUpdate();
   }
+
+
+
+  // componentDidUpdate(){
+  //   fetch('/calendars/' +this.props.calendar_id +'/events.json')
+  //     .then(response => response.json())
+  //     .then(data => this.setState({ events: data }))
+  // }
 
   render() {
     return (
@@ -44,7 +62,7 @@ class Calendar extends React.Component {
         dayClick = {this.dayClick.bind(this)}
         eventClick = {this.eventClick.bind(this)}
       />
-        <AddNewEventModal ref="child" calendar_id={ this.props.calendar_id }  />
+        <AddNewEventModal ref="child" calendar_id={ this.props.calendar_id }  parentMethod={this.listUpdate}/>
       </div>
     );
   }

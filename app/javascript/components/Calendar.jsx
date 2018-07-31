@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import FullCalendar from 'fullcalendar-reactwrapper';
 import EditEvent from './EditEvent'
+import AddNewEventModal from './AddNewEventModal'
 
 class Calendar extends React.Component {
 
@@ -9,10 +10,15 @@ class Calendar extends React.Component {
     super(props);
     this.state = {
       events: null,
-      showModalWindow: false,
-      eventData: null,
+      eventData: null
     };
   }
+
+  toggleEditModal = (date) =>{
+    this.refs.child.toggle()
+    this.refs.child.setDate(date)
+  }   
+  
 
   componentDidMount(){
     fetch('/calendars/' +this.props.calendar_id +'/events.json')
@@ -38,45 +44,17 @@ class Calendar extends React.Component {
         dayClick = {this.dayClick.bind(this)}
         eventClick = {this.eventClick.bind(this)}
       />
-          
+        <AddNewEventModal ref="child" calendar_id={ this.props.calendar_id }  />
       </div>
     );
   }
 
   dayClick (date, allDay, jsEvent, view) {
-    const title = prompt('Event Title:');
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
-        method: 'post',
-        credentials: 'same-origin', // <-- includes cookies in the request
-        headers: {
-          'CSRF-Token': token,
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({title: title, start: date.format(), calendar_id: this.props.calendar_id})
-      })
-      .then((json)=>{ 
-
-        console.log("json--->", json); 
-        fetch('/calendars/' +this.props.calendar_id +'/events.json')
-               .then(res2 => res2.json())
-               .then((res2) => this.setState({ events: res2 }))
-
-   })
+    const formattedDate = date.format()
+    this.toggleEditModal(formattedDate);
   }
 
   eventClick (date, allDay, jsEvent, view) {
-    // const title = prompt('Event Title:');
-    // fetch('/api/v1/events.json', {
-    //   method: 'post',
-    //   headers: {
-    //     'Accept': 'application/json, text/plain, */*',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({title: title, start: date })
-    // }).then(res=>res.json())
-    //   .then(res => console.log(res));
   }
 
 }

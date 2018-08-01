@@ -1,36 +1,60 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import moment from 'moment';
+import { render } from 'react-dom';
+import DatePicker from 'react-datepicker';
 
 class EditEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
-      titleEvent: '',
-      dateEvent: '02-02-18',
-      startEvent: null,
-      endEvent: null,
-      event: {}
+      title: '',
+      event: {},
+      startDate: moment(),
+      endDate: moment()
     };
 
     this.toggle = this.toggle.bind(this);
     this.submit = this.submit.bind(this);
     this.publish = this.publish.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
     this.setEvent = this.setEvent.bind(this);
-    this.formatDateForInput = this.formatDateForInput.bind(this);
+    // this.formatDateForInput = this.formatDateForInput.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
   }
 
-  handleChange({ target }) {
+  // handleChange({ target }) {
+  //   this.setState({
+  //     [target.name]: target.value
+  //   });
+  // }
+
+  handleStartDateChange(date) {
     this.setState({
-      [target.name]: target.value
+      startDate: date
+    });
+  }
+
+  handleEndDateChange(date) {
+    this.setState({
+      endDate: date
+    });
+  }
+
+  handleTitleChange(title) {
+    this.setState({
+      title: title
     });
   }
 
   setEvent = (event) => {
     this.setState({
-      event: event
+      event: event,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      title: event.title
     })
   }
 
@@ -43,18 +67,16 @@ class EditEventModal extends React.Component {
   }
 
   publish = () => {
-    console.log(this.state.titleEvent);
-    const title = this.state.titleEvent;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
-        method: 'post',
+      fetch('/calendars/' +(this.props.calendar_id) +'/events/' + (this.state.event.id), {
+        method: 'put',
         credentials: 'same-origin', // <-- includes cookies in the request
         headers: {
           'CSRF-Token': token,
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({title: title, start: this.state.startEvent, end: this.state.endEvent, calendar_id: this.props.calendar_id})
+        body: JSON.stringify({title: this.state.title, start: this.state.startDate, end: this.state.endDate, calendar_id: this.props.calendar_id})
       })
       .then((json)=>{ 
         console.log("json--->", json); 
@@ -73,30 +95,7 @@ class EditEventModal extends React.Component {
     this.publish();
   }
 
-  formatDateForInput = (date) => {
 
-    if (date) {
-      let formattedDate = date.toDate()
-      let dd = formattedDate.getDate();
-      let mm = formattedDate.getMonth()+1; //January is 0!
-      let yyyy = formattedDate.getFullYear();
-
-      if(dd<10){
-        dd='0'+dd;
-      } 
-
-      if(mm<10){
-        mm='0'+mm;
-      } 
-
-      const newDate = yyyy+'-'+mm+'-'+dd;
-      console.log("newDate=>>>", newDate)
-      return newDate;
-    } else {
-      return ''
-    }
- }
-  
 
   render() {
     return (
@@ -111,24 +110,22 @@ class EditEventModal extends React.Component {
                   <Input  type="text" 
                           name="titleEvent" 
                           value={ this.state.event.title } 
-                          onChange={ this.handleChange }
+                          onChange={ this.handleTitleChange }
                           />
                 </Label>
                 <Label>
                   Start Date:
-                  <Input  type="date" 
-                          name="startDateEvent" 
-                          value={ this.formatDateForInput(this.state.event.start) } 
-                          onChange={ this.handleChange }
-                          />
+                  <DatePicker
+                    selected={this.state.startDate}
+                    onChange={this.handleStartDateChange}
+                  />
                 </Label>
                 <Label>
                   End Date:
-                  <Input  type="date" 
-                          name="endDateEvent" 
-                          value={ this.formatDateForInput(this.state.event.end) } 
-                          onChange={ this.handleChange }
-                          />
+                  <DatePicker
+                    selected={this.state.endDate}
+                    onChange={this.handleEndDateChange}
+                  />
                 </Label>
               </FormGroup>
             </ModalBody>

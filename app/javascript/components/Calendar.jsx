@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import FullCalendar from 'fullcalendar-reactwrapper';
 import EditEvent from './EditEvent'
 import AddNewEventModal from './AddNewEventModal'
+import EditEventModal from './EditEventModal'
 
 class Calendar extends React.Component {
 
@@ -22,27 +23,20 @@ class Calendar extends React.Component {
     .then(data => this.setState({ events: data }))
   }
 
-  toggleEditModal = (date) =>{
-    this.refs.child.toggle()
-    this.refs.child.setDate(date)
+  toggleNewEventModal = (date) =>{
+    this.refs.childNewModal.toggle()
+    this.refs.childNewModal.setDate(date)
+  } 
+  
+  toggleEditEventModal = (event) =>{
+    this.refs.childEditModal.toggle()
+    this.refs.childEditModal.setEvent(event)
   }   
   
 
   componentDidMount(){
-    // fetch('/calendars/' +this.props.calendar_id +'/events.json')
-    //   .then(response => response.json())
-    //   .then(data => this.setState({ events: data }))
-
     this.listUpdate();
   }
-
-
-
-  // componentDidUpdate(){
-  //   fetch('/calendars/' +this.props.calendar_id +'/events.json')
-  //     .then(response => response.json())
-  //     .then(data => this.setState({ events: data }))
-  // }
 
   render() {
     return (
@@ -62,17 +56,20 @@ class Calendar extends React.Component {
         dayClick = {this.dayClick.bind(this)}
         eventClick = {this.eventClick.bind(this)}
       />
-        <AddNewEventModal ref="child" calendar_id={ this.props.calendar_id }  parentMethod={this.listUpdate}/>
+        <AddNewEventModal ref="childNewModal" calendar_id={ this.props.calendar_id } parentMethod={this.listUpdate}/>
+        <EditEventModal ref="childEditModal" calendar_id={ this.props.calendar_id } parentMethod={this.listUpdate}/>
       </div>
     );
   }
 
   dayClick (date, allDay, jsEvent, view) {
     const formattedDate = date.format()
-    this.toggleEditModal(formattedDate);
+    this.toggleNewEventModal(formattedDate);
   }
 
   eventClick (date, allDay, jsEvent, view) {
+    console.log("date---->", date)
+    this.toggleEditEventModal(date);
   }
 
 }

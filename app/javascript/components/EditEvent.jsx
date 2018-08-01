@@ -37,8 +37,8 @@ class EditEvent extends Component {
     
     return (
       <div>
-        {console.log("EditEvent ->>>", this.props.editedEvent)}
-        {console.log("modalIsOpen ->>>", this.props.modalIsOpen)}
+        {/* {console.log("EditEvent ->>>", this.props.editedEvent)}
+        {console.log("modalIsOpen ->>>", this.props.modalIsOpen)} */}
 
         <button onClick={this.openModal}>Open Modal</button>
         <Modal

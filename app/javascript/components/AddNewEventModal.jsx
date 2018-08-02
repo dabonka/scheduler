@@ -43,7 +43,7 @@ class AddNewEventModal extends React.Component {
     const title = this.state.titleEvent;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
-        method: 'post',
+        method: 'POST',
         credentials: 'same-origin', // <-- includes cookies in the request
         headers: {
           'CSRF-Token': token,

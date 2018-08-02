@@ -18,18 +18,11 @@ class EditEventModal extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.submit = this.submit.bind(this);
     this.publish = this.publish.bind(this);
-    // this.handleChange = this.handleChange.bind(this);
     this.setEvent = this.setEvent.bind(this);
-    // this.formatDateForInput = this.formatDateForInput.bind(this);
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
+    this.formatDateToPublish = this.formatDateToPublish.bind(this);
   }
-
-  // handleChange({ target }) {
-  //   this.setState({
-  //     [target.name]: target.value
-  //   });
-  // }
 
   handleStartDateChange(date) {
     this.setState({
@@ -66,17 +59,22 @@ class EditEventModal extends React.Component {
     this.props.parentMethod();
   }
 
+  formatDateToPublish = (date) => {
+    const formattedDate = date.format("YYYY-MM-DD hh:mm:ss")
+    return formattedDate
+  }
+
   publish = () => {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       fetch('/calendars/' +(this.props.calendar_id) +'/events/' + (this.state.event.id), {
-        method: 'put',
+        method: 'PUT',
         credentials: 'same-origin', // <-- includes cookies in the request
         headers: {
           'CSRF-Token': token,
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({title: this.state.title, start: this.state.startDate, end: this.state.endDate, calendar_id: this.props.calendar_id})
+        body: JSON.stringify({title: this.state.title, start: this.formatDateToPublish(this.state.startDate), end: this.formatDateToPublish(this.state.endDate), calendar_id: this.props.calendar_id})
       })
       .then((json)=>{ 
         console.log("json--->", json); 
@@ -94,8 +92,6 @@ class EditEventModal extends React.Component {
     this.toggle();
     this.publish();
   }
-
-
 
   render() {
     return (

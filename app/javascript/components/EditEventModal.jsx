@@ -22,6 +22,8 @@ class EditEventModal extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.formatDateToPublish = this.formatDateToPublish.bind(this);
+    this.updateStartDate = this.updateStartDate.bind(this);
+    this.updateEndDate = this.updateEndDate.bind(this);
   }
 
   handleStartDateChange(date) {
@@ -43,6 +45,7 @@ class EditEventModal extends React.Component {
   }
 
   setEvent = (event) => {
+    
     this.setState({
       event: event,
       startDate: event.startDate,
@@ -60,8 +63,20 @@ class EditEventModal extends React.Component {
   }
 
   formatDateToPublish = (date) => {
-    const formattedDate = date.format("YYYY-MM-DD hh:mm:ss")
-    return formattedDate
+    const formattedDate = date.format("YYYY-MM-DD hh:mm:ss");
+    return formattedDate;
+  }
+
+  updateStartDate = () => {
+    this.setState({
+      startDate: this.state.event.start
+    })
+  }
+
+  updateEndDate = () => {
+    this.setState({
+      endDate: this.state.event.end
+    })
   }
 
   publish = () => {
@@ -112,14 +127,14 @@ class EditEventModal extends React.Component {
                 <Label>
                   Start Date:
                   <DatePicker
-                    selected={this.state.startDate}
+                    selected={this.state.startDate ? this.state.startDate : this.updateStartDate()}
                     onChange={this.handleStartDateChange}
                   />
                 </Label>
                 <Label>
                   End Date:
                   <DatePicker
-                    selected={this.state.endDate}
+                    selected={this.state.endDate ? this.state.endDate : this.updateEndDate()}
                     onChange={this.handleEndDateChange}
                   />
                 </Label>

@@ -127,14 +127,14 @@ class EditEventModal extends React.Component {
                 <Label>
                   Start Date:
                   <DatePicker
-                    selected={this.state.startDate ? this.state.startDate : this.updateStartDate()}
+                    selected={this.state.startDate ? this.state.startDate : this.state.event.start}
                     onChange={this.handleStartDateChange}
                   />
                 </Label>
                 <Label>
                   End Date:
                   <DatePicker
-                    selected={this.state.endDate ? this.state.endDate : this.updateEndDate()}
+                    selected={this.state.endDate ? this.state.endDate : this.state.event.start}
                     onChange={this.handleEndDateChange}
                   />
                 </Label>

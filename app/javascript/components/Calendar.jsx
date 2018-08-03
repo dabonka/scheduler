@@ -68,7 +68,6 @@ class Calendar extends React.Component {
   }
 
   eventClick (date, allDay, jsEvent, view) {
-    console.log("date---->", date)
     this.toggleEditEventModal(date);
   }
 

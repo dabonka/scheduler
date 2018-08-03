@@ -46,7 +46,6 @@ class EditEventModal extends React.Component {
   }
 
   setEvent = (event) => {
-    console.log ("event is set, title:", this.state.event)
     this.setState({
       event: event,
       startDate: event.start,
@@ -93,7 +92,6 @@ class EditEventModal extends React.Component {
         body: JSON.stringify({title: this.state.title, start: this.formatDateToPublish(this.state.startDate), end: this.formatDateToPublish(this.state.endDate), calendar_id: this.props.calendar_id})
       })
       .then((json)=>{ 
-        console.log("json--->", json); 
         this.updateEventsList();
       })
   }
@@ -121,31 +119,38 @@ class EditEventModal extends React.Component {
           <ModalHeader toggle={this.toggle}>Edit event</ModalHeader>
             <Form onSubmit={this.handleSubmit}>
             <ModalBody>
-              <FormGroup>
-                <Label>
-                  Title:
-                  {/* <Input  type="text" 
-                          name="titleEvent" 
-                          value={ this.state.title } 
-                          onChange={ this.handleTitleChange }
-                          /> */}
-                <input value={this.state.title} onChange={this.handleTitleChange} />
-                </Label>
-                <Label>
-                  Start Date:
-                  <DatePicker
-                    selected={this.state.startDate ? this.state.startDate : this.state.event.start}
-                    onChange={this.handleStartDateChange}
-                  />
-                </Label>
-                <Label>
-                  End Date:
-                  <DatePicker
-                    selected={this.state.endDate ? this.state.endDate : this.state.event.start}
-                    onChange={this.handleEndDateChange}
-                  />
-                </Label>
-              </FormGroup>
+                <div className="row">
+                    <div className="col-2">
+                      Title:
+                    </div>
+                    <div className="col-lg-10">
+                      <input value={this.state.title} onChange={this.handleTitleChange} />
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-2">
+                      Start Date:
+                    </div>
+                    
+                    <div className="col-2">
+                      <DatePicker
+                        selected={this.state.startDate ? this.state.startDate : this.state.event.start}
+                        onChange={this.handleStartDateChange}
+                      />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-2">
+                      End Date:
+                    </div>
+                    <div className="col-2">
+                      <DatePicker
+                        selected={this.state.endDate ? this.state.endDate : this.state.event.start}
+                        onChange={this.handleEndDateChange}
+                      />
+                    </div>
+                </div>
             </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.submit}>Save</Button>

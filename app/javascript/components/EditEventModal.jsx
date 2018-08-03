@@ -21,9 +21,10 @@ class EditEventModal extends React.Component {
     this.setEvent = this.setEvent.bind(this);
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
     this.formatDateToPublish = this.formatDateToPublish.bind(this);
-    this.updateStartDate = this.updateStartDate.bind(this);
-    this.updateEndDate = this.updateEndDate.bind(this);
+    // this.updateStartDate = this.updateStartDate.bind(this);
+    // this.updateEndDate = this.updateEndDate.bind(this);
   }
 
   handleStartDateChange(date) {
@@ -45,11 +46,11 @@ class EditEventModal extends React.Component {
   }
 
   setEvent = (event) => {
-    
+    console.log ("event is set, title:", this.state.event)
     this.setState({
       event: event,
-      startDate: event.startDate,
-      endDate: event.endDate,
+      startDate: event.start,
+      endDate: event.end,
       title: event.title
     })
   }
@@ -67,17 +68,17 @@ class EditEventModal extends React.Component {
     return formattedDate;
   }
 
-  updateStartDate = () => {
-    this.setState({
-      startDate: this.state.event.start
-    })
-  }
+  // updateStartDate = () => {
+  //   this.setState({
+  //     startDate: this.state.event.start
+  //   })
+  // }
 
-  updateEndDate = () => {
-    this.setState({
-      endDate: this.state.event.end
-    })
-  }
+  // updateEndDate = () => {
+  //   this.setState({
+  //     endDate: this.state.event.end
+  //   })
+  // }
 
   publish = () => {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -108,6 +109,11 @@ class EditEventModal extends React.Component {
     this.publish();
   }
 
+  handleTitleChange = (e) => {
+    this.setState({title: e.target.value});
+  }
+
+
   render() {
     return (
       <div>
@@ -118,11 +124,12 @@ class EditEventModal extends React.Component {
               <FormGroup>
                 <Label>
                   Title:
-                  <Input  type="text" 
+                  {/* <Input  type="text" 
                           name="titleEvent" 
-                          value={ this.state.event.title } 
+                          value={ this.state.title } 
                           onChange={ this.handleTitleChange }
-                          />
+                          /> */}
+                <input value={this.state.title} onChange={this.handleTitleChange} />
                 </Label>
                 <Label>
                   Start Date:

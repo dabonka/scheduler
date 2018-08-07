@@ -2,7 +2,7 @@
 lock "~> 3.11.0"
 
 set :application, "Scheduler"
-set :repo_url, "git@example.com:dabonka/scheduler.git"
+set :repo_url, 'https://github.com/dabonka/scheduler.git'
 
 # Ветка по-умолчанию
 set :branch, 'todeploy'
@@ -21,6 +21,17 @@ set :rbenv_roles, :all
 
 # А это рекомендуют добавить для приложений, использующих ActiveRecord
 set :puma_init_active_record, true
+
+desc 'Run rake tasks on server'
+task :rake do
+  on roles(:app), in: :sequence, wait: 5 do
+    within release_path do
+      with rails_env: :production do
+        execute :rake, ENV['task'], 'RAILS_ENV=production'
+      end
+    end
+  end
+end
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp

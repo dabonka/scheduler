@@ -5,7 +5,7 @@ set :application, "Scheduler"
 set :repo_url, 'https://github.com/dabonka/scheduler.git'
 
 # Ветка по-умолчанию
-set :branch, 'todeploy'
+set :branch, 'master'
 # Директория для деплоя
 set :deploy_to, '/home/deploy/applications/scheduler'
 

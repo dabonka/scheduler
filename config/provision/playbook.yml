@@ -114,11 +114,11 @@
 
     - name: 'postgresql | set auth type'
       copy: 'src=configs/pg_hba.conf dest=/etc/postgresql/9.5/main/pg_hba.conf owner=postgres group=postgres mode=0644'
-      when: 'postgres_login|failed'
+      when: (postgres_login) or (failed)
 
     - name: 'postgresql | restart service'
       service: name=postgresql state=restarted
-      when: 'postgres_login|failed'
+      when: ('postgres_login') or ('failed')
 
     - name: 'postgresql | create shared directory'
       shell: 'mkdir -p {{ application }}/shared/config -m 775 && chown -R {{ user }}:{{ user }} {{ home }}/applications'

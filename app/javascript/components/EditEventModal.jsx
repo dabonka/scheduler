@@ -23,8 +23,6 @@ class EditEventModal extends React.Component {
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.formatDateToPublish = this.formatDateToPublish.bind(this);
-    // this.updateStartDate = this.updateStartDate.bind(this);
-    // this.updateEndDate = this.updateEndDate.bind(this);
   }
 
   handleStartDateChange(date) {
@@ -63,21 +61,12 @@ class EditEventModal extends React.Component {
   }
 
   formatDateToPublish = (date) => {
+    if (!date) {
+      date = moment()
+    }
     const formattedDate = date.format("YYYY-MM-DD hh:mm:ss");
     return formattedDate;
   }
-
-  // updateStartDate = () => {
-  //   this.setState({
-  //     startDate: this.state.event.start
-  //   })
-  // }
-
-  // updateEndDate = () => {
-  //   this.setState({
-  //     endDate: this.state.event.end
-  //   })
-  // }
 
   publish = () => {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')

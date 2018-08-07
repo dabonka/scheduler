@@ -1,13 +1,18 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+// import momentExt from 'fullcalendar/src/moment-ext';
 
 class AddNewEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
-      titleEvent: '',
-      dateEvent: '02-02-18'
+      title: '',
+      dateEvent: moment(),
+      startDate: null,
+      endDate: null
     };
 
     this.toggle = this.toggle.bind(this);
@@ -25,9 +30,8 @@ class AddNewEventModal extends React.Component {
 
   setDate = (date) => {
     this.setState({
-      dateEvent: date
+      dateEvent: moment(date, "YYYY-MM-DD")
     })
-    //console.log ("setted date --->", this.state.dateEvent)
   }
 
   childUpdateEvents = () => {
@@ -36,11 +40,16 @@ class AddNewEventModal extends React.Component {
 
   updateEventsList = () => {
     this.props.parentMethod();
-}
+  }
+
+  handleTitleChange(title) {
+    this.setState({
+      title: title
+    });
+  }
 
   publish = () => {
-    //console.log(this.state.titleEvent);
-    const title = this.state.titleEvent;
+    const title = this.state.title;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
         method: 'POST',
@@ -53,7 +62,6 @@ class AddNewEventModal extends React.Component {
         body: JSON.stringify({title: title, start: this.state.dateEvent, calendar_id: this.props.calendar_id})
       })
       .then((json)=>{ 
-        //console.log("json--->", json); 
         this.updateEventsList();
       })
   }
@@ -70,24 +78,45 @@ class AddNewEventModal extends React.Component {
     this.publish();
   }
   
-
   render() {
     return (
       <div>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>New event</ModalHeader>
             <Form onSubmit={this.handleSubmit}>
-            <ModalBody>
-              <FormGroup>
-                <Label>
-                  Title:
-                  <Input  type="text" 
-                          name="titleEvent" 
-                          value={ this.state.titleEvent } 
-                          onChange={ this.handleChange }
-                          />
-                </Label>
-              </FormGroup>
+              <ModalBody>
+                <div className="row">
+                    <div className="col-2">
+                      Title:
+                    </div>
+                    <div className="col-lg-10">
+                      <input value={this.state.title} onChange={this.handleTitleChange} />
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-2">
+                      Start Date:
+                    </div>
+                    
+                    <div className="col-2">
+                      <DatePicker
+                        selected={this.state.startDate ? this.state.startDate : this.state.dateEvent}
+                        onChange={this.handleStartDateChange}
+                      />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-2">
+                      End Date:
+                    </div>
+                    <div className="col-2">
+                      <DatePicker
+                        selected={this.state.endDate ? this.state.endDate : this.state.dateEvent }
+                        onChange={this.handleEndDateChange}
+                      />
+                    </div>
+                </div>
             </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.submit}>Save</Button>

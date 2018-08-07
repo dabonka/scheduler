@@ -1,36 +1,54 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import DatePicker from 'react-datepicker';
 import moment from 'moment';
-// import momentExt from 'fullcalendar/src/moment-ext';
+import { render } from 'react-dom';
+import DatePicker from 'react-datepicker';
 
-class AddNewEventModal extends React.Component {
+class EditEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
       title: '',
-      dateEvent: moment(),
-      startDate: null,
-      endDate: null
+      event: {},
+      startDate: moment(),
+      endDate: moment()
     };
 
     this.toggle = this.toggle.bind(this);
     this.submit = this.submit.bind(this);
     this.publish = this.publish.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.setDate = this.setDate.bind(this);
+    this.setEvent = this.setEvent.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.formatDateToPublish = this.formatDateToPublish.bind(this);
   }
 
-  handleChange({ target }) {
+  handleStartDateChange(date) {
     this.setState({
-      [target.name]: target.value
+      startDate: date
     });
   }
 
-  setDate = (date) => {
+  handleEndDateChange(date) {
     this.setState({
-      dateEvent: moment(date, "YYYY-MM-DD")
+      endDate: date
+    });
+  }
+
+  handleTitleChange(title) {
+    this.setState({
+      title: title
+    });
+  }
+
+  setEvent = (event) => {
+    this.setState({
+      event: event,
+      startDate: event.start,
+      endDate: event.end,
+      title: event.title
     })
   }
 
@@ -42,30 +60,30 @@ class AddNewEventModal extends React.Component {
     this.props.parentMethod();
   }
 
-  handleTitleChange(title) {
-    this.setState({
-      title: title
-    });
+  formatDateToPublish = (date) => {
+    if (!date) {
+      date = moment()
+    }
+    const formattedDate = date.format("YYYY-MM-DD hh:mm:ss");
+    return formattedDate;
   }
 
   publish = () => {
-    const title = this.state.title;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      fetch('/calendars/' +(this.props.calendar_id) +'/events.json', {
-        method: 'POST',
+      fetch('/calendars/' +(this.props.calendar_id) +'/events/' + (this.state.event.id), {
+        method: 'PUT',
         credentials: 'same-origin', // <-- includes cookies in the request
         headers: {
           'CSRF-Token': token,
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({title: title, start: this.state.dateEvent, calendar_id: this.props.calendar_id})
+        body: JSON.stringify({title: this.state.title, start: this.formatDateToPublish(this.state.startDate), end: this.formatDateToPublish(this.state.endDate), calendar_id: this.props.calendar_id})
       })
       .then((json)=>{ 
         this.updateEventsList();
       })
   }
-
 
   toggle = () => {
     this.setState({
@@ -77,14 +95,19 @@ class AddNewEventModal extends React.Component {
     this.toggle();
     this.publish();
   }
-  
+
+  handleTitleChange = (e) => {
+    this.setState({title: e.target.value});
+  }
+
+
   render() {
     return (
       <div>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>New event</ModalHeader>
+          <ModalHeader toggle={this.toggle}>Edit event</ModalHeader>
             <Form onSubmit={this.handleSubmit}>
-              <ModalBody>
+            <ModalBody>
                 <div className="row">
                     <div className="col-2">
                       Title:
@@ -101,7 +124,7 @@ class AddNewEventModal extends React.Component {
                     
                     <div className="col-2">
                       <DatePicker
-                        selected={this.state.startDate ? this.state.startDate : this.state.dateEvent}
+                        selected={this.state.startDate ? this.state.startDate : this.state.event.start}
                         onChange={this.handleStartDateChange}
                       />
                     </div>
@@ -112,7 +135,7 @@ class AddNewEventModal extends React.Component {
                     </div>
                     <div className="col-2">
                       <DatePicker
-                        selected={this.state.endDate ? this.state.endDate : this.state.dateEvent }
+                        selected={this.state.endDate ? this.state.endDate : this.state.event.start}
                         onChange={this.handleEndDateChange}
                       />
                     </div>
@@ -129,4 +152,4 @@ class AddNewEventModal extends React.Component {
   }
 }
 
-export default AddNewEventModal;
+export default EditEventModal;

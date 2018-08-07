@@ -41,6 +41,5 @@ yarn-debug.log*
 log/
 tmp/
 
-/config/provision/configs/settings.yml
 /config/provision/keys/id_rsa
 /config/provision/keys/id_rsa.pub

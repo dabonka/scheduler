@@ -37,7 +37,7 @@
 yarn-debug.log*
 .yarn-integrity
 /public/assets
-config/database.yml
+
 log/
 tmp/
 

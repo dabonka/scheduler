@@ -1,0 +1,10 @@
+---
+- name: Testing...
+  hosts: all
+  become: true
+  remote_user: userssh
+  become_method: sudo
+
+  tasks:
+    - name: install python2
+      apt: name=sqlite3 state=present

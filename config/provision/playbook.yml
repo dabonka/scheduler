@@ -67,15 +67,15 @@
 
     - name: 'rbenv | add bin to path'
       shell: echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> {{ home }}/.bashrc
-      when: (plugin_installed) or (failed)
+      when: 'plugin_installed is failed'
 
     - name: 'rbenv | init'
       shell: echo 'eval "$(rbenv init -)"' >> {{ home }}/.bashrc
-      when: (plugin_installed) or (failed)
+      when: 'plugin_installed is failed'
 
     - name: 'rbenv | clone ruby-build repo'
       git: 'repo=git://github.com/sstephenson/ruby-build.git dest={{ rbenv_root }}/plugins/ruby-build accept_hostkey=yes'
-      when: (plugin_installed) or (failed)
+      when: 'plugin_installed is failed'
 
     - name: 'rbenv | check ruby {{ ruby_version }} installed'
       shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv versions | grep {{ ruby_version }}'
@@ -84,27 +84,27 @@
 
     - name: 'rbenv | install ruby {{ ruby_version }}'
       shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv install {{ ruby_version }}'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     - name: 'rbenv | set global ruby {{ ruby_version }}'
       shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv global {{ ruby_version }}'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     - name: 'rbenv | rehash'
       shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv rehash'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     - name: 'rbenv | create .gemrc'
       lineinfile: 'dest={{ home }}/.gemrc owner={{ user }} group={{ user }} mode=0644 line="gem: --no-ri --no-rdoc" create=yes'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     - name: 'ruby | install bundler'
       shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv exec gem install bundler'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     - name: 'rbenv | change owner'
       shell: 'chown -R {{ user }}:{{ user }} {{ rbenv_root }}'
-      when: (ruby_installed) or (failed)
+      when: 'ruby_installed is failed'
 
     ### Manage database ###
     - name: 'postgresql | check user'
@@ -114,27 +114,27 @@
 
     - name: 'postgresql | set auth type'
       copy: 'src=configs/pg_hba.conf dest=/etc/postgresql/9.5/main/pg_hba.conf owner=postgres group=postgres mode=0644'
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     - name: 'postgresql | restart service'
       service: name=postgresql state=restarted
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     - name: 'postgresql | create shared directory'
       shell: 'mkdir -p {{ application }}/shared/config -m 775 && chown -R {{ user }}:{{ user }} {{ home }}/applications'
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     - name: 'postgresql | copy database.yml'
       template: 'src=configs/database.yml dest={{ application }}/shared/config/database.yml owner={{ user }} group={{ user }} mode=0644'
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     - name: 'postgresql | copy settings.yml'
       template: 'src=configs/settings.yml dest={{ application }}/shared/config/settings.yml owner={{ user }} group={{ user }} mode=0644'
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     - name: 'postgresql | create database'
       shell: 'createdb -U postgres -O postgres -E UTF8 -l en_US.UTF-8 {{ app_name }}_production'
-      when: (postgres_login) or (failed)
+      when: 'postgres_login is failed'
 
     ### Setup nginx ###
     - name: 'nginx | check config'
